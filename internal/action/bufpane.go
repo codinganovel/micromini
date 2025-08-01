@@ -41,7 +41,6 @@ func init() {
 	BufBindings = NewKeyTree()
 }
 
-
 // BufMapEvent maps an event to an action
 func BufMapEvent(k Event, action string) {
 	config.Bindings["buffer"][k.Name()] = action

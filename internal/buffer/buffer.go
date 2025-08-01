@@ -148,7 +148,9 @@ func (b *SharedBuffer) MarkModified(start, end int) {
 	if b.Settings["syntax"].(bool) && b.SyntaxDef != nil {
 		l := -1
 		for i := start; i <= end; i++ {
-			l = util.Max(b.Highlighter.ReHighlightStates(b, i), l)
+			if newL := b.Highlighter.ReHighlightStates(b, i); newL > l {
+				l = newL
+			}
 		}
 		b.Highlighter.HighlightMatches(b, start, l)
 	}
@@ -262,7 +264,8 @@ func NewBufferFromFileAtLoc(path string, btype BufType, cursorLoc Loc) (*Buffer,
 	} else if err != nil {
 		return nil, err
 	} else {
-		buf = NewBuffer(file, util.FSize(file), filename, cursorLoc, btype)
+		fi, _ := file.Stat()
+		buf = NewBuffer(file, fi.Size(), filename, cursorLoc, btype)
 		if buf == nil {
 			return nil, errors.New("could not open file")
 		}
@@ -416,7 +419,6 @@ func NewBuffer(r io.Reader, size int64, path string, startcursor Loc, btype BufT
 			calcHash(b, &b.origHash)
 		}
 	}
-
 
 	OpenBuffers = append(OpenBuffers, b)
 
@@ -983,7 +985,7 @@ func (b *Buffer) ClearMatches() {
 // depending on the settings)
 func (b *Buffer) IndentString(tabsize int) string {
 	if b.Settings["tabstospaces"].(bool) {
-		return util.Spaces(tabsize)
+		return strings.Repeat(" ", tabsize)
 	}
 	return "\t"
 }

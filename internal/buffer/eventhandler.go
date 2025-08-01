@@ -237,7 +237,6 @@ func (eh *EventHandler) Execute(t *TextEvent) {
 	}
 	eh.UndoStack.Push(t)
 
-
 	ExecuteTextEvent(t, eh.buf)
 }
 

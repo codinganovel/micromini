@@ -271,7 +271,6 @@ func verifySetting(option string, value interface{}, def interface{}) error {
 		return fmt.Errorf("Error: setting '%s' has incorrect type (%s), using default value: %v (%s)", option, valType, def, defType)
 	}
 
-
 	if err := OptionIsValid(option, value); err != nil {
 		return err
 	}
@@ -549,7 +548,6 @@ func validateChoice(option string, value interface{}) error {
 
 	return errors.New("Option has no pre-defined choices")
 }
-
 
 func validateEncoding(option string, value interface{}) error {
 	_, err := htmlindex.Get(value.(string))

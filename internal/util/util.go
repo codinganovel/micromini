@@ -1,13 +1,10 @@
 package util
 
 import (
-	"archive/zip"
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
-	"net/http"
 	"net/url"
 	"os"
 	"os/user"
@@ -20,7 +17,6 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/blang/semver"
 	runewidth "github.com/mattn/go-runewidth"
 )
 
@@ -29,8 +25,6 @@ var (
 
 	// Version is the version number or commit hash
 	Version = "0.0.0-unknown"
-	// SemVersion is the Semantic version
-	SemVersion semver.Version
 	// CommitHash is the commit this version was built on
 	CommitHash = "Unknown"
 	// CompileDate is the date this binary was compiled on
@@ -84,12 +78,6 @@ func (e OverwriteError) Unwrap() error {
 }
 
 func init() {
-	var err error
-	SemVersion, err = semver.Make(Version)
-	if err != nil {
-		fmt.Println("Invalid version: ", Version, err)
-	}
-
 	_, wt := os.LookupEnv("WT_SESSION")
 	if runtime.GOOS == "windows" && !wt {
 		FakeCursor = true
@@ -236,28 +224,6 @@ func StringWidth(b []byte, n, tabsize int) int {
 	return width
 }
 
-// Min takes the min of two ints
-func Min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
-}
-
-// Max takes the max of two ints
-func Max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-// FSize gets the size of a file
-func FSize(f *os.File) int64 {
-	fi, _ := f.Stat()
-	return fi.Size()
-}
-
 // IsWordChar returns whether or not a rune is a 'word character'
 // Word characters are defined as numbers, letters or sub-word delimiters
 func IsWordChar(r rune) bool {
@@ -308,11 +274,6 @@ func IsUpperLetter(r rune) bool {
 func IsLowerLetter(r rune) bool {
 	// unicode.IsLower() returns true for letters only
 	return unicode.IsLower(r)
-}
-
-// Spaces returns a string with n spaces
-func Spaces(n int) string {
-	return strings.Repeat(" ", n)
 }
 
 // IsSpaces checks if a given string is only spaces
@@ -585,75 +546,9 @@ func IsAutocomplete(c rune) bool {
 	return c == '.' || IsWordChar(c)
 }
 
-// String converts a byte array to a string (for lua plugins)
+// String converts a byte array to a string (for legacy compatibility)
 func String(s []byte) string {
 	return string(s)
-}
-
-// Unzip unzips a file to given folder
-func Unzip(src, dest string) error {
-	r, err := zip.OpenReader(src)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-
-	os.MkdirAll(dest, 0755)
-
-	// Closure to address file descriptors issue with all the deferred .Close() methods
-	extractAndWriteFile := func(f *zip.File) error {
-		rc, err := f.Open()
-		if err != nil {
-			return err
-		}
-		defer rc.Close()
-
-		path := filepath.Join(dest, f.Name)
-
-		// Check for ZipSlip (Directory traversal)
-		if !strings.HasPrefix(path, filepath.Clean(dest)+string(os.PathSeparator)) {
-			return fmt.Errorf("illegal file path: %s", path)
-		}
-
-		if f.FileInfo().IsDir() {
-			os.MkdirAll(path, f.Mode())
-		} else {
-			os.MkdirAll(filepath.Dir(path), f.Mode())
-			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-
-			_, err = io.Copy(f, rc)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	for _, f := range r.File {
-		err := extractAndWriteFile(f)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// HttpRequest returns a new http.Client for making custom requests (for lua plugins)
-func HttpRequest(method string, url string, headers []string) (resp *http.Response, err error) {
-	client := http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	for i := 0; i < len(headers); i += 2 {
-		req.Header.Add(headers[i], headers[i+1])
-	}
-	return client.Do(req)
 }
 
 // SafeWrite writes bytes to a file in a "safe" way, preventing loss of the

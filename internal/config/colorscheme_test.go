@@ -56,19 +56,18 @@ func TestColorHexStringToStyle(t *testing.T) {
 	assert.Equal(t, tcell.NewRGBColor(239, 18, 52), bg)
 }
 
-func TestColorschemeParser(t *testing.T) {
-	testColorscheme := `color-link default "#F8F8F2,#282828"
-color-link comment "#75715E,#282828"
-# comment
-color-link identifier "#66D9EF,#282828" #comment
-color-link constant "#AE81FF,#282828"
-color-link constant.string "#E6DB74,#282828"
-color-link constant.string.char "#BDE6AD,#282828"`
-
-	c, err := ParseColorscheme("testColorscheme", testColorscheme, nil)
+func TestHardcodedColorscheme(t *testing.T) {
+	// Test that our hardcoded colorscheme initializes correctly
+	err := InitColorscheme()
 	assert.Nil(t, err)
 
-	fg, bg, _ := c["comment"].Decompose()
-	assert.Equal(t, tcell.NewRGBColor(117, 113, 94), fg)
-	assert.Equal(t, tcell.NewRGBColor(40, 40, 40), bg)
+	// Test that essential colorscheme entries exist
+	assert.NotNil(t, Colorscheme["default"])
+	assert.NotNil(t, Colorscheme["comment"])
+	assert.NotNil(t, Colorscheme["constant"])
+	assert.NotNil(t, Colorscheme["statusline"])
+
+	// Test that the comment color is gray as expected
+	fg, _, _ := Colorscheme["comment"].Decompose()
+	assert.Equal(t, tcell.ColorGray, fg)
 }

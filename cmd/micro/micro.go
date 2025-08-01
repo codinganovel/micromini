@@ -16,10 +16,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/codinganovel/autocd-go"
 	"github.com/go-errors/errors"
 	isatty "github.com/mattn/go-isatty"
 	"github.com/micro-editor/tcell/v2"
-	"github.com/codinganovel/autocd-go"
 	"github.com/zyedidia/micro/v2/internal/action"
 	"github.com/zyedidia/micro/v2/internal/buffer"
 	"github.com/zyedidia/micro/v2/internal/clipboard"
@@ -352,7 +352,6 @@ func main() {
 		}
 	}()
 
-
 	err = checkBackup("bindings.json")
 	if err != nil {
 		screen.TermMessage(err)
@@ -361,7 +360,6 @@ func main() {
 
 	action.InitBindings()
 	action.InitCommands()
-
 
 	action.InitGlobals()
 	buffer.SetMessager(action.InfoBar)

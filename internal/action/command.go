@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -272,7 +273,22 @@ func (h *BufPane) CdCmd(args []string) {
 // Additionally, even if Go returns memory to the OS, the OS does not always claim it because
 // there may be plenty of memory to spare
 func (h *BufPane) MemUsageCmd(args []string) {
-	InfoBar.Message(util.GetMemStats())
+	var memstats runtime.MemStats
+	runtime.ReadMemStats(&memstats)
+	const unit = 1024
+	formatBytes := func(bytes uint64) string {
+		if bytes < unit {
+			return fmt.Sprintf("%d B", bytes)
+		}
+		div, exp := uint64(unit), 0
+		for n := bytes / unit; n >= unit; n /= unit {
+			div *= unit
+			exp++
+		}
+		return fmt.Sprintf("%.1f %cB", float64(bytes)/float64(div), "KMGTPE"[exp])
+	}
+	message := fmt.Sprintf("Alloc: %s, Sys: %s, GC: %d, PauseTotalNs: %dns", formatBytes(memstats.Alloc), formatBytes(memstats.Sys), memstats.NumGC, memstats.PauseTotalNs)
+	InfoBar.Message(message)
 }
 
 // PwdCmd prints the current working directory

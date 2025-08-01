@@ -12,28 +12,14 @@ const (
 	RTSyntax       = 0
 	RTHelp         = 1
 	RTSyntaxHeader = 2
+	RTPlugin       = 3 // Stub for tests - plugins removed
 )
 
 var (
-	NumTypes = 3 // How many filetypes are there
-	
-	// Plugin stub variables for micromini (plugins removed)
-	Plugins []interface{}
-	
-	// Plugin error stub for micromini (plugins removed)
-	ErrNoSuchFunction = errors.New("Plugin system removed in micromini")
+	NumTypes = 4 // How many filetypes are there (including RTPlugin stub for tests)
 )
 
 type RTFiletype int
-
-// Plugin stub type for micromini (plugins removed)
-type Plugin struct {
-	Name    string
-	DirName string
-	Srcs    []interface{}
-	Info    interface{}
-	Default bool
-}
 
 // RuntimeFile allows the program to read runtime data like colorschemes or syntax files
 type RuntimeFile interface {
@@ -191,50 +177,7 @@ func InitPlugins() {
 	// Plugin system removed in micromini - no-op
 }
 
-// PluginReadRuntimeFile allows plugin scripts to read the content of a runtime file
-func PluginReadRuntimeFile(fileType RTFiletype, name string) string {
-	if file := FindRuntimeFile(fileType, name); file != nil {
-		if data, err := file.Data(); err == nil {
-			return string(data)
-		}
-	}
-	return ""
-}
-
-// PluginListRuntimeFiles allows plugins to lists all runtime files of the given type
-func PluginListRuntimeFiles(fileType RTFiletype) []string {
-	files := ListRuntimeFiles(fileType)
-	result := make([]string, len(files))
-	for i, f := range files {
-		result[i] = f.Name()
-	}
-	return result
-}
-
-// PluginAddRuntimeFile is a no-op in micromini since plugins are removed
-func PluginAddRuntimeFile(plugin string, filetype RTFiletype, filePath string) error {
-	return errors.New("Plugin system removed in micromini")
-}
-
-// PluginAddRuntimeFilesFromDirectory is a no-op in micromini since plugins are removed
-func PluginAddRuntimeFilesFromDirectory(plugin string, filetype RTFiletype, directory, pattern string) error {
-	return errors.New("Plugin system removed in micromini")
-}
-
-// PluginAddRuntimeFileFromMemory is a no-op in micromini since plugins are removed
-func PluginAddRuntimeFileFromMemory(filetype RTFiletype, filename, data string) {
-	// Plugin system removed in micromini - no-op
-}
-
-// FindPlugin is a no-op stub in micromini since plugins are removed
-func FindPlugin(name string) interface{} {
-	return nil
-}
-
-// NewPluginInfo is a no-op stub in micromini since plugins are removed
-func NewPluginInfo(data []byte) (interface{}, error) {
-	return nil, errors.New("Plugin system removed in micromini")
-}
+// Removed unused plugin functions from micromini to reduce code size
 
 // PluginCommand is a no-op stub in micromini since plugins are removed
 func PluginCommand(args ...interface{}) error {

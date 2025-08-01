@@ -83,6 +83,8 @@ func InitColorscheme() error {
 	return nil
 }
 
+// ParseColorscheme function removed - colorschemes are hardcoded in micromini
+
 // StringToStyle returns a style from a string
 // The strings must be in the format "extra foregroundcolor,backgroundcolor"
 // The 'extra' can be bold, reverse, italic or underline

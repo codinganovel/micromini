@@ -671,7 +671,11 @@ func (w *BufWindow) displayBuffer() {
 			switch r {
 			case '\t':
 				ts := tabsize - (totalwidth % tabsize)
-				width = util.Min(ts, maxWidth-vloc.X)
+				if ts < maxWidth-vloc.X {
+					width = ts
+				} else {
+					width = maxWidth - vloc.X
+				}
 				totalwidth += ts
 			default:
 				width = runewidth.RuneWidth(r)
@@ -823,7 +827,11 @@ func (w *BufWindow) displayScrollBar() {
 		}
 		scrollBarRune := []rune(scrollBarChar)
 
-		for y := barstart; y < util.Min(barstart+barsize, w.Y+w.bufHeight); y++ {
+		endY := barstart + barsize
+		if w.Y+w.bufHeight < endY {
+			endY = w.Y + w.bufHeight
+		}
+		for y := barstart; y < endY; y++ {
 			screen.SetContent(scrollX, y, scrollBarRune[0], nil, scrollBarStyle)
 		}
 	}

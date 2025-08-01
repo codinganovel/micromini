@@ -157,3 +157,20 @@ Please avoid contributions that add back removed complexity (plugins, themes, ex
 micromini is based on the excellent [micro editor](https://github.com/zyedidia/micro) by Zachary Yedidia and contributors.
 
 AutoCD functionality provided by [autocd-go](https://github.com/codinganovel/autocd-go).
+
+```
+    ╔═══╗
+    ║ ◉ ║     ⚡
+   ╔╝───╚╗   ⚡
+   ║  ^  ║
+   ╚┬───┬╝
+ ⚡  │   │
+   ┌─┴─┐ └─┐
+   │ █ │   │  ┌─────────────┐
+   └─┬─┘   │  │ >nano file  │
+     │   ┌─┘  │ Hello World │
+   ┌─┴─┐ │    │ _           │
+   └───┘ │    └─────────────┘
+       ┌─┴─┐
+       └───┘
+```

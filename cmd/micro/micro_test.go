@@ -35,7 +35,7 @@ func startup(args []string) (tcell.SimulationScreen, error) {
 	}
 
 	config.InitRuntimeFiles(true)
-	config.InitPlugins()
+	// Plugin initialization removed in micromini
 
 	err = config.ReadSettings()
 	if err != nil {
@@ -64,10 +64,7 @@ func startup(args []string) (tcell.SimulationScreen, error) {
 		}
 	}()
 
-	err = config.LoadAllPlugins()
-	if err != nil {
-		screen.TermMessage(err)
-	}
+	// Plugin loading removed in micromini
 
 	action.InitBindings()
 	action.InitCommands()
@@ -86,10 +83,7 @@ func startup(args []string) (tcell.SimulationScreen, error) {
 	action.InitTabs(b)
 	action.InitGlobals()
 
-	err = config.RunPluginFn("init")
-	if err != nil {
-		return nil, err
-	}
+	// Plugin init function removed in micromini
 
 	s.InjectResize()
 	handleEvent()

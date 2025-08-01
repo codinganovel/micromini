@@ -96,7 +96,11 @@ func (w *BufWindow) getVLocFromLoc(loc buffer.Loc) VLoc {
 		switch r {
 		case '\t':
 			ts := tabsize - (totalwidth % tabsize)
-			width = util.Min(ts, w.bufWidth-vloc.VisualX)
+			if ts < w.bufWidth-vloc.VisualX {
+				width = ts
+			} else {
+				width = w.bufWidth - vloc.VisualX
+			}
 			totalwidth += ts
 		default:
 			width = runewidth.RuneWidth(r)
@@ -173,7 +177,11 @@ func (w *BufWindow) getLocFromVLoc(svloc VLoc) buffer.Loc {
 		switch r {
 		case '\t':
 			ts := tabsize - (totalwidth % tabsize)
-			width = util.Min(ts, w.bufWidth-vloc.VisualX)
+			if ts < w.bufWidth-vloc.VisualX {
+				width = ts
+			} else {
+				width = w.bufWidth - vloc.VisualX
+			}
 			totalwidth += ts
 		default:
 			width = runewidth.RuneWidth(r)

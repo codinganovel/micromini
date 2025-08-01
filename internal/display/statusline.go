@@ -56,7 +56,6 @@ var statusInfo = map[string]func(*buffer.Buffer) string{
 	},
 }
 
-
 // NewStatusLine returns a statusline bound to a window
 func NewStatusLine(win *BufWindow) *StatusLine {
 	s := new(StatusLine)
